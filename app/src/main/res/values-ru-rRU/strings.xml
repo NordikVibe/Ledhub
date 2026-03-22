@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Smart LED</string>
+    <string name="tab_home">Главная</string>
+    <string name="tab_effects">Еффекти</string>
+    <string name="tab_settings">Настройки</string>
+    <string name="settings_theme">Тема</string>
+    <string name="theme_system">Системная</string>
+    <string name="theme_light">Светлая</string>
+    <string name="theme_dark">Темная</string>
+    <string name="led_controller">LED Контроллер</string>
+    <string name="brightness">%d%%</string>
+    <string name="effects_coming_soon">Система еффектов в разработке!</string>
+    <string name="fill_leds">Заполнить все пиксели</string>
+    <string name="notif_title">Лента подключена</string>
+    <string name="notif_white">⬜ Включить</string>
+    <string name="notif_off">⬛ Выключить</string>
+</resources>
