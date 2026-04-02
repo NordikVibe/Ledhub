@@ -4,15 +4,25 @@
     <string name="tab_home">Home</string>
     <string name="tab_effects">Effects</string>
     <string name="tab_settings">Settings</string>
-    <string name="settings_theme">Theme</string>
+    <string name="settings_item_theme">Theme</string>
     <string name="theme_system">System</string>
     <string name="theme_light">Light</string>
     <string name="theme_dark">Dark</string>
-    <string name="led_controller">LED Controller</string>
-    <string name="brightness">%d%%</string>
+    <string name="title">LED Controller</string>
+    <string name="home_itemLabel_brightness" translatable="false">%d%%</string>
     <string name="effects_coming_soon">Effects coming soon!</string>
-    <string name="fill_leds">Fill all LEDs</string>
-    <string name="notif_title">Smart LED connected</string>
-    <string name="notif_white">⬜ On</string>
-    <string name="notif_off">⬛ Off</string>
+    <string name="home_item_fillLeds">Fill all LEDs</string>
+    <string name="notification_title">Smart LED connected</string>
+    <string name="notification_on">⬜ On</string>
+    <string name="notification_off">⬛ Off</string>
+    <string name="tab_presets">Presets</string>
+    <string name="tab_IDE">IDE</string>
+    <string name="IDE_file_create">New...</string>
+    <string name="IDE_file_open">Open...</string>
+    <string name="dialog_confirm">OK</string>
+    <string name="dialog_inputText">Input text</string>
+    <string name="dialog_dismiss">cancel</string>
+    <string name="IDE_file_create_title">New file...</string>
+    <string name="IDE_file_open_title">Open file...</string>
+    <string name="IDE_file_save">Save</string>
 </resources>

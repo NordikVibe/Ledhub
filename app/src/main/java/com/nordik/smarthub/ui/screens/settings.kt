@@ -3,13 +3,9 @@ package com.nordik.smarthub.ui.screens
 import com.nordik.smarthub.R
 import android.content.Context
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
@@ -32,7 +28,7 @@ fun SettingsScreen(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.fillMaxWidth()
     ) {
-        Text(stringResource(R.string.settings_theme), style = MaterialTheme.typography.titleMedium)
+        Text(stringResource(R.string.settings_item_theme), style = MaterialTheme.typography.titleMedium)
         Spacer(Modifier.weight(1f))
         listOf(
             ThemeMode.SYSTEM to stringResource(R.string.theme_system),

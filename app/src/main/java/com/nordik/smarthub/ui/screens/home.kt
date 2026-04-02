@@ -30,6 +30,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import yuku.ambilwarna.AmbilWarnaDialog
 
+import com.nordik.smarthub.adjustColorByReference
+
 @Composable
 fun HomeScreen(
     context: android.content.Context,
@@ -57,8 +59,8 @@ fun HomeScreen(
                                 .size(25.dp)
                                 .background(currentLedColor, shape = RoundedCornerShape(50))
                                 .border(
-                                    width = (1 / 2).dp,
-                                    color = MaterialTheme.colorScheme.primary,
+                                    width = 1.dp,
+                                    color = adjustColorByReference(MaterialTheme.colorScheme.primary, currentLedColor),
                                     shape = RoundedCornerShape(50)
                                 )
                                 .clickable {
@@ -137,7 +139,7 @@ fun HomeScreen(
             )
             dialog.show()
         }) {
-            Icon(Icons.Default.Create, contentDescription = "Fill all LEDs")
+            Icon(Icons.Default.Create, "")
         }
     }
 }

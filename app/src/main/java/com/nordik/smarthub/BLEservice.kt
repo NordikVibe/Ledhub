@@ -16,13 +16,12 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Binder
-import android.os.Build
 import android.os.IBinder
 import android.util.Log
-import androidx.compose.ui.res.stringResource
 import androidx.core.app.NotificationCompat
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -34,6 +33,10 @@ class BleService : Service() {
     var bluetoothGatt: BluetoothGatt? = null
     var ledColorStreamCharacteristic: BluetoothGattCharacteristic? = null
     var dialogCharacteristic: BluetoothGattCharacteristic? = null
+    // connection timeout handling
+    private var connectTimeoutJob: Job? = null
+    private var isConnected: Boolean = false
+    private var connectAttemptId: Int = 0
 
     companion object {
         const val ACTION_WHITE = "com.nordik.smarthub.ACTION_WHITE"
@@ -90,11 +93,7 @@ class BleService : Service() {
         registerReceiver(notificationReceiver, filter, RECEIVER_NOT_EXPORTED)
     }
 
-    override fun onDestroy() {
-        Log.d("BLE", "BleService onDestroy called")
-        super.onDestroy()
-        unregisterReceiver(notificationReceiver)
-    }
+    // ... existing code ...
     fun createNotification(): Notification {
         val channelId = "ble_service"
         val channel = NotificationChannel(channelId, "BLE Service", NotificationManager.IMPORTANCE_LOW)
@@ -110,10 +109,10 @@ class BleService : Service() {
         )
 
         return NotificationCompat.Builder(this, channelId)
-            .setContentTitle(getString(R.string.notif_title))
+            .setContentTitle(getString(R.string.notification_title))
             .setSmallIcon(android.R.drawable.stat_sys_data_bluetooth)
-            .addAction(0, getString(R.string.notif_white), whitePendingIntent)
-            .addAction(0, getString(R.string.notif_off), offPendingIntent)
+            .addAction(0, getString(R.string.notification_on), whitePendingIntent)
+            .addAction(0, getString(R.string.notification_off), offPendingIntent)
             .build()
     }
 
@@ -135,11 +134,15 @@ class BleService : Service() {
             Log.d("BLE", "onConnectionStateChange status=$status newState=$newState")
             if (newState == BluetoothProfile.STATE_CONNECTED) {
                 Log.d("BLE", "Connected! Starting service discovery...")
+                // mark connected, cancel timeout
+                isConnected = true
+                connectTimeoutJob?.cancel()
                 gatt?.let { bleEvents.tryEmit(BleEvent.Connected(it)) }
                 gatt?.discoverServices()  // ← вот это главное
             } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
                 Log.d("BLE", "Disconnected")
                 gatt?.let { bleEvents.tryEmit(BleEvent.Disconnected(it)) }
+                isConnected = false
             }
         }
         @SuppressLint("MissingPermission")
@@ -147,7 +150,7 @@ class BleService : Service() {
             if (status == BluetoothGatt.GATT_SUCCESS) {
                 val ledCountChar = gatt?.getService(LED_SERVICE_UUID)?.getCharacteristic(LED_COUNT_UUID)
                 ledCountChar?.let {
-                    gatt.readCharacteristic(it) // Асинхронно
+                    gatt.readCharacteristic(it)
                 }
 
                 val colorChar = gatt?.getService(LED_SERVICE_UUID)?.getCharacteristic(LED_COLOR_STREAM_UUID)
@@ -191,9 +194,48 @@ class BleService : Service() {
             return
         }
         Log.d("BLE", "connectBLE called")
+        // start a connection attempt id and schedule timeout
+        connectAttemptId += 1
+        val thisAttemptId = connectAttemptId
+        // cancel previous timeout if any
+        connectTimeoutJob?.cancel()
+        connectTimeoutJob = CoroutineScope(Dispatchers.Main).launch {
+            delay(15_000)
+            // if still not connected and attempt id matches, stop service
+            if (!isConnected && thisAttemptId == connectAttemptId) {
+                Log.d("BLE", "connect timeout reached for attempt $thisAttemptId, stopping service")
+                try {
+                    stopForeground(true)
+                } catch (e: Exception) {
+                    Log.w("BLE", "stopForeground failed: ${e.message}")
+                }
+                try {
+                    stopSelf()
+                } catch (e: Exception) {
+                    Log.w("BLE", "stopSelf failed: ${e.message}")
+                }
+            }
+        }
         val bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
         val remoteDevice = bluetoothAdapter.getRemoteDevice("E8:6B:EA:D4:68:3A")
         Log.d("BLE", "connecting to $remoteDevice")
         bluetoothGatt = remoteDevice?.connectGatt(this, true, bleGattCallback)
+    }
+    @SuppressLint("MissingPermission")
+    override fun onDestroy() {
+        Log.d("BLE", "BleService onDestroy: cancelling timeout and closing gatt")
+        connectTimeoutJob?.cancel()
+        try {
+            bluetoothGatt?.close()
+            bluetoothGatt = null
+        } catch (e: Exception) {
+            Log.w("BLE", "Error closing GATT: ${e.message}")
+        }
+        try {
+            unregisterReceiver(notificationReceiver)
+        } catch (e: Exception) {
+            Log.w("BLE", "Error unregisterReceiver: ${e.message}")
+        }
+        super.onDestroy()
     }
 }

@@ -12,6 +12,8 @@ material = "1.13.0"
 constraintlayout = "2.2.1"
 
 navigation_compose = "2.9.6"
+animation = "1.10.5"
+ui = "1.10.5"
 
 [libraries]
 navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigation_compose" }
@@ -33,6 +35,8 @@ androidx-compose-material3 = { group = "androidx.compose.material3", name = "mat
 androidx-compose-material3-adaptive-navigation-suite = { group = "androidx.compose.material3", name = "material3-adaptive-navigation-suite" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
+androidx-compose-animation = { group = "androidx.compose.animation", name = "animation", version.ref = "animation" }
+androidx-ui = { group = "androidx.compose.ui", name = "ui", version.ref = "ui" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

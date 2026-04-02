@@ -28,6 +28,7 @@ import androidx.compose.foundation.isSystemInDarkTheme
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Star
@@ -39,13 +40,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 
 @OptIn(ExperimentalMaterial3Api::class)
 class MainActivity : ComponentActivity() {
     private var bleService: BleService? = null
-    private val bleEvents = MutableSharedFlow<BleService.BleEvent>(extraBufferCapacity = 5)
     private val ledCountStateBridge = mutableStateOf(0)
     private val _bleService = MutableStateFlow<BleService?>(null)
     private var bluetoothGatt: BluetoothGatt? = null
@@ -183,6 +182,7 @@ class MainActivity : ComponentActivity() {
                     }
                 }
             }
+            val effectsExpanded = remember { mutableStateOf(false) }
             val brightness = remember { mutableStateOf(200F)}
             var fillColor by remember { mutableStateOf(Color.Black) }
 
@@ -213,7 +213,7 @@ class MainActivity : ComponentActivity() {
             Scaffold(
                 topBar = {
                     TopAppBar(
-                        title = { Text(stringResource(R.string.led_controller)) })
+                        title = { Text(stringResource(R.string.title)) })
                 },
                 bottomBar = {
                     NavigationBar() {
@@ -224,10 +224,16 @@ class MainActivity : ComponentActivity() {
                             onClick = { selectedTab.value = 0 }
                         )
                         NavigationBarItem(
-                            icon = { Icon(Icons.Default.Star, contentDescription = stringResource(R.string.tab_effects)) },
-                            label = { Text(stringResource(R.string.tab_effects)) },
+                            icon = { Icon(Icons.Default.Star, contentDescription = null) },
+                            label = { Text(stringResource(R.string.tab_presets)) },
                             selected = selectedTab.value == 1,
                             onClick = { selectedTab.value = 1 }
+                        )
+                        NavigationBarItem(
+                            icon = { Icon(Icons.Default.Edit, contentDescription = null) },
+                            label = { Text(stringResource(R.string.tab_IDE)) },
+                            selected = selectedTab.value == 3,
+                            onClick = { selectedTab.value = 3 }
                         )
                         NavigationBarItem(
                             icon = { Icon(Icons.Default.Settings, contentDescription = stringResource(R.string.tab_settings)) },
@@ -241,7 +247,7 @@ class MainActivity : ComponentActivity() {
             ) { padding ->
                 Box(Modifier.padding(padding).padding(16.dp)) {
                     when (selectedTab.value) {
-                        0 ->HomeScreen(
+                        0 -> HomeScreen(
                                 context = this@MainActivity,
                                 ledCountState = ledCountState,
                                 ledColorsState = ledColorsState,
@@ -261,12 +267,13 @@ class MainActivity : ComponentActivity() {
                                     }
                                 }
                             )
-                        1 -> Effects()
+                        1 -> EffectsExp()
                         2 -> SettingsScreen(
                             context = this@MainActivity,
                             themeMode = themeMode,
                             onThemeChange = { themeMode = it}
                         )
+                        3 -> EffectsEdit()
                     }
                 }
             }
