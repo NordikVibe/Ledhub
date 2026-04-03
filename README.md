@@ -182,7 +182,7 @@ Android-застосунок для керування адресними RGB-с
    - Підключи Android 14+ пристрій через USB із увімкненим **USB-налагодженням**, **або**
    - Запусти AVD (Android Virtual Device) з API 34+
 
-4. **Зберіть та запустіть**
+4. **Збудуй та запусти**
    - Натисни кнопку **Run ▶**, або скористайся меню **Run → Run 'app'**
    - Для генерації окремого APK: **Build → Build Bundle(s) / APK(s) → Build APK(s)**
    - Готовий APK знаходитиметься за шляхом `app/build/outputs/apk/debug/app-debug.apk`
