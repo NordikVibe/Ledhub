@@ -55,7 +55,7 @@ class BleService : Service() {
     private val DIALOG_UUID = UUID.fromString("a7fed865-d364-424c-87d6-9e893fb661c4")
 
     val bleEvents = MutableSharedFlow<BleEvent>(replay = 1, extraBufferCapacity = 5)
-    private val _ledCount = MutableStateFlow(5)
+    private val _ledCount = MutableStateFlow(0)
     val ledCountStateFlow: StateFlow<Int> get() = _ledCount
     private val notificationReceiver = object : BroadcastReceiver() {
         @SuppressLint("MissingPermission")

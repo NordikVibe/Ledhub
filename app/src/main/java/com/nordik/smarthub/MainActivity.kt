@@ -24,6 +24,7 @@ import android.util.Log
 
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 
 import androidx.compose.foundation.layout.*
@@ -208,7 +209,7 @@ class MainActivity : ComponentActivity() {
                 }
             }
             MaterialTheme(
-                colorScheme = if (darkTheme) darkColorScheme() else lightColorScheme()
+                colorScheme = if (darkTheme) darkColorScheme() else lightColorScheme(),
             ) {
             Scaffold(
                 topBar = {

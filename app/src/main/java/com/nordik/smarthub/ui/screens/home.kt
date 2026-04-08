@@ -3,6 +3,7 @@ package com.nordik.smarthub.ui.screens
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Create
@@ -44,16 +46,13 @@ fun HomeScreen(
     onBrightnessChange: (Float) -> Unit
 ) {
     Column(modifier = Modifier.fillMaxSize().padding(4.dp)) {
-        val ledRowsCount = (ledCountState + 9) / 10
-        for (rowIndex in 0 until ledRowsCount) {
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                for (columnIndex in 0 until 10) {
-                    val ledIndex = rowIndex * 10 + columnIndex
-                    if (ledIndex < ledColorsState.size) {
-                        val currentLedColor = ledColorsState[ledIndex]
+                for (index in 0 until ledCountState) {
+                    if (index < ledColorsState.size) {
+                        val currentLedColor = ledColorsState[index]
                         Box(
                             modifier = Modifier
                                 .size(25.dp)
@@ -78,7 +77,7 @@ fun HomeScreen(
                                                 selectedColor: Int
                                             ) {
                                                 onLedColorChange(
-                                                    ledIndex,
+                                                    index,
                                                     Color(
                                                         red = ((selectedColor shr 16) and 0xFF) / 255f,
                                                         green = ((selectedColor shr 8) and 0xFF) / 255f,
@@ -98,7 +97,6 @@ fun HomeScreen(
                 Spacer(modifier = Modifier.width(8.dp))
             }
             Spacer(modifier = Modifier.height(8.dp))
-        }
         Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
             Slider(
                 value = brightness.value,
@@ -141,5 +139,4 @@ fun HomeScreen(
         }) {
             Icon(Icons.Default.Create, "")
         }
-    }
-}
+    }}
